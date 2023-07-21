@@ -30,6 +30,7 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
+
     - uses: actions/checkout@v3
     - run: touch ./src/main/resources/application.yaml
     - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yaml
@@ -39,11 +40,13 @@ jobs:
       run: chmod +x ./gradlew
       shell: bash
 
-    # (3) Gradle build (Test 제외)
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-      with:
-        arguments: clean build -x test
+      run: ./gradlew build
+      shell: bash
+
+    - name: Make zip file
+      run: zip -r ./$GITHUB_SHA .
+      shell: bash
 
     # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
     - name: Configure AWS credentials
