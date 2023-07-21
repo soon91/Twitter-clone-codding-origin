@@ -1,14 +1,14 @@
-name: CI-CD
+name: Spring-Boot-twitter-clone-Amazon EC2
 
 on:
   push:
     branches:
-      - main
-
+      - master
 env:
-  S3_BUCKET_NAME: s3-anabada-deploy
-  CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY-ANABADA
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET_NAME: my-hanghaetwitter-bucket
+  CODE_DEPLOY_APPLICATION_NAME: my-hanghaetwitter-app
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: my-hanghaetwitter-app-group
 
 jobs:
   build:
