@@ -1,5 +1,7 @@
 package com.twitter.clone.twitterclone.register.service;
 
+import com.twitter.clone.twitterclone.register.model.request.EmailCodeRequest;
+import com.twitter.clone.twitterclone.register.repository.EmailCodeVerifyRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -16,6 +18,7 @@ public class EmailService {
 
     private final JavaMailSender emailSender;
     private String emailCode;
+    private final EmailCodeVerifyRepository emailCodeVerifyRepository;
 
     public void createEmailCode() {
         String randomStr = "";
@@ -42,6 +45,21 @@ public class EmailService {
         MimeMessage emailForm = createEmail(email);
         emailSender.send(emailForm);
 
+        emailCodeVerifyRepository.createEmailCodeVerify(email, emailCode);
+
         return emailCode;
+    }
+
+    public void verifyEmailCode(EmailCodeRequest request) {
+        if (isVerify(request)) {
+            throw new IllegalArgumentException("인증번호가 일치하지 않습니다.");
+        }
+        emailCodeVerifyRepository.removeEmailCodeVerify(request.getEmail());
+    }
+
+    private boolean isVerify(EmailCodeRequest request) {
+        return !(emailCodeVerifyRepository.hasKey(request.getEmail()) &&
+                emailCodeVerifyRepository.getEmailCodeVerify(request.getEmail())
+                        .equals(request.getEmailCode()));
     }
 }

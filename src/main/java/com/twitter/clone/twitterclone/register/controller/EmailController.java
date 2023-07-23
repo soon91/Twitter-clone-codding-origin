@@ -1,5 +1,6 @@
 package com.twitter.clone.twitterclone.register.controller;
 
+import com.twitter.clone.twitterclone.register.model.request.EmailCodeRequest;
 import com.twitter.clone.twitterclone.register.model.request.EmailRequest;
 import com.twitter.clone.twitterclone.register.service.EmailService;
 import jakarta.mail.MessagingException;
@@ -21,6 +22,13 @@ public class EmailController {
     @PostMapping("/send/email")
     public String sendEmail(@RequestBody EmailRequest request) throws MessagingException, UnsupportedEncodingException {
         String emailCode = emailService.sendEmail(request.getEmail());
-        return emailCode;
+        return "인증번호 발송 " + emailCode;
     }
+
+    @PostMapping("/verify/email")
+    public String verifyEmailCode(@RequestBody EmailCodeRequest request) throws MessagingException, UnsupportedEncodingException {
+        emailService.verifyEmailCode(request);
+        return "인증번호 확인 완료";
+    }
+
 }
